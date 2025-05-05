@@ -36,20 +36,12 @@ def sync_group():
         if email not in active_emails and not email.endswith("@watsonblinds.com.au")
     ]
 
-    if dry_run:
-        print(f"Dry run: Would remove {len(to_remove)} email(s):")
-        for email in to_remove:
-            print(f"  - {email}")
-    else:
+    if not dry_run:
         for email in to_remove:
             remove_from_group(group_email, email)
 
-    return jsonify({
-        "group": group_email,
-        "dry_run": dry_run,
-        "would_remove" if dry_run else "removed": to_remove,
-        "status": "ok"
-    })
+    return render_template("sync_result.html", group=group_email,
+                           removed=to_remove, dry_run=dry_run)
 
 
 if __name__ == "__main__":
